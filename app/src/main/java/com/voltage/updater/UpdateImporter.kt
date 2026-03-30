@@ -70,7 +70,6 @@ class UpdateImporter(private val activity: UpdatesActivity, private val callback
             var importedFile: File? = null
             try {
                 importedFile = importFile(uri)
-                verifyPackage(importedFile)
 
                 val update = buildLocalUpdate(importedFile)
                 addUpdate(update)
@@ -134,20 +133,6 @@ class UpdateImporter(private val activity: UpdatesActivity, private val callback
             setStatus(UpdateStatus.VERIFIED)
             setPersistentStatus(UpdateStatus.Persistent.VERIFIED)
             setVersion("$name ($buildDate)")
-        }
-    }
-
-    @Throws(Exception::class)
-    private fun verifyPackage(file: File) {
-        try {
-            android.os.RecoverySystem.verifyPackage(file, null, null)
-        } catch (e: Exception) {
-            if (file.exists()) {
-                file.delete()
-                throw Exception("Verification failed, file has been deleted")
-            } else {
-                throw e
-            }
         }
     }
 
